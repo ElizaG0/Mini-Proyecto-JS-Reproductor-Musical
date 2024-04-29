@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reproductor de Música</title>
+<style>
+  /* Estilos CSS para la interfaz de usuario */
+</style>
+</head>
+<body>
+
+<div id="lista-canciones"></div>
+<div id="info-cancion"></div>
+<div id="controles">
+  <button onclick="reproductor.playPause()">Play/Pause</button>
+  <button onclick="reproductor.shuffle()">Shuffle</button>
+  <button onclick="reproductor.prev()">Prev</button>
+  <button onclick="reproductor.next()">Next</button>
+  <button onclick="reproductor.stop()">Stop</button>
+</div>
+
+<script>
+// Arreglo de canciones
+const canciones = [
+  {
+    nombre: "Canción 1",
+    album: "Álbum 1",
+    artista: "Artista 1",
+    duracion: "3:45",
+    imagen: "url1.jpg"
+  },
+  {
+    nombre: "Canción 2",
+    album: "Álbum 1",
+    artista: "Artista 2",
+    duracion: "4:20",
+    imagen: "url2.jpg"
+  },
+  // Agrega más canciones según sea necesario
+];
+
+// Clase Reproductor
+class Reproductor {
+  constructor(canciones) {
+    this.canciones = canciones;
+    this.enReproduccion = false;
+    this.ahoraSuena = 0;
+  }
+
+  playPause() {
+    this.enReproduccion = !this.enReproduccion;
+    if (this.enReproduccion) {
+      console.log("Ahora suena: " + this.canciones[this.ahoraSuena].nombre);
+    } else {
+      console.log("Haz pausado la reproducción");
+    }
+  }
+
+  shuffle() {
+    this.ahoraSuena = Math.floor(Math.random() * this.canciones.length);
+    this.showSongInSite();
+  }
+
+  next() {
+    if (this.ahoraSuena < this.canciones.length - 1) {
+      this.ahoraSuena++;
+      this.showSongInSite();
+    }
+  }
+
+  prev() {
+    if (this.ahoraSuena > 0) {
+      this.ahoraSuena--;
+      this.showSongInSite();
+    }
+  }
+
+  stop() {
+    console.log("Haz detenido la reproducción");
+    this.ahoraSuena = -1;
+    this.showSongInSite();
+  }
+
+  play(song) {
+    this.ahoraSuena = song;
+    this.showSongInSite();
+  }
+
+  songsList() {
+    let listaHTML = "<ul>";
+    this.canciones.forEach((cancion, index) => {
+      listaHTML += `<li><a href="#" onclick="reproductor.play(${index});">${cancion.nombre}</a></li>`;
+    });
+    listaHTML += "</ul>";
+    return listaHTML;
+  }
+
+  showSongInSite() {
+    const infoCancion = document.getElementById("info-cancion");
+    if (this.ahoraSuena !== -1) {
+      const cancionActual = this.canciones[this.ahoraSuena];
+      infoCancion.innerHTML = `
+        <h2>${cancionActual.nombre}</h2>
+        <p>Álbum: ${cancionActual.album}</p>
+        <p>Artista: ${cancionActual.artista}</p>
+        <p>Duración: ${cancionActual.duracion}</p>
+        <img src="${cancionActual.imagen}" alt="Portada del álbum">
+      `;
+    } else {
+      infoCancion.innerHTML = "<p>No hay canción seleccionada</p>";
+    }
+  }
+}
+
+// Crear instancia del reproductor
+const reproductor = new Reproductor(canciones);
+
+// Mostrar la lista de canciones
+const listaCanciones = document.getElementById("lista-canciones");
+listaCanciones.innerHTML = reproductor.songsList();
+</script>
+
+</body>
+</html>
